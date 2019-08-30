@@ -1,4 +1,4 @@
-let contractAddress = '0x5cc86cdc4861544d8937604b2ddf07176d4d52d2';
+let contractAddress = '0x7d1f5216a2e8da2a4641f7d13012f94d88b74ed2';
 let abi =
 [
 	{
@@ -156,18 +156,16 @@ let currentTokenBalance;
 let tokenPrice;
 
 window.addEventListener('load', function() {
-	
+
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
-	
     // Use Mist/MetaMask's provider
     window.web3 = new Web3(web3.currentProvider);
   } else {
     console.log('No web3? You should consider trying MetaMask!')
-	// fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
-	web3js = new Web3(new Web3.providers.HttpProvider('http://localhost:8545'));
-
-  }	
+    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+    window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
+  }
   // Now you can start your app & access web3 freely:
   startApp();
 });
@@ -175,14 +173,12 @@ window.addEventListener('load', function() {
 function startApp() {
   simpleVoteContract = web3.eth.contract(abi);
   simpleVote = simpleVoteContract.at(contractAddress);
-  alert(simpleVote);
   document.getElementById('contractAddr').innerHTML = getLink(contractAddress);
 
   web3.eth.getAccounts(function(e,r){
-	
-  	document.getElementById('accountAddr').innerHTML = getLink(r[0]);
-  	accountAddress = r[0];
-  	getValue();
+  document.getElementById('accountAddr').innerHTML = getLink(r[0]);
+  accountAddress = r[0];
+  getValue();
   });
 }
 
@@ -230,15 +226,17 @@ function getCandidateInfo() {
   simpleVote.getTicketsReceive(function(e,r){
     for(let i=1;i<=r.length;i++)
     {
+		
       document.getElementById('day_votes_' + i).innerHTML = r[i-1].toString();
     }
   });
   simpleVote.getTicketsReceivebyme(function(e,r){
     for(let i=1;i<=r.length;i++)
     {
-      document.getElementById('day_votes_me' + i).innerHTML = r[i-1].toString();
+	
+      document.getElementById('day_votes_me_' + i).innerHTML = r[i-1].toString();
     }
-  });
+  });  
 }
 
 function voteForCandidate() {
