@@ -167,7 +167,7 @@ window.addEventListener('load', function() {
 	// fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
 	
     window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
-  }
+  }	
   // Now you can start your app & access web3 freely:
   startApp();
 });
@@ -178,7 +178,7 @@ function startApp() {
   document.getElementById('contractAddr').innerHTML = getLink(contractAddress);
 
   web3.eth.getAccounts(function(e,r){
-	alert(r[0]);
+	
   	document.getElementById('accountAddr').innerHTML = getLink(r[0]);
   	accountAddress = r[0];
   	getValue();
