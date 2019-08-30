@@ -1,10 +1,71 @@
-let contractAddress = '0x285c365063d5d37D86a4eb7b258c0A00fFb58b4E';
+let contractAddress = '0x5cc86cdc4861544d8937604b2ddf07176d4d52d2';
 let abi =
 [
 	{
+		"constant": false,
+		"inputs": [],
+		"name": "buy",
+		"outputs": [],
+		"payable": true,
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"constant": false,
+		"inputs": [
+			{
+				"name": "candidate",
+				"type": "bytes32"
+			},
+			{
+				"name": "count",
+				"type": "uint256"
+			}
+		],
+		"name": "vote",
+		"outputs": [],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"name": "total",
+				"type": "uint256"
+			},
+			{
+				"name": "price",
+				"type": "uint256"
+			}
+		],
+		"payable": false,
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"constant": true,
+		"inputs": [
+			{
+				"name": "candidate",
+				"type": "bytes32"
+			}
+		],
+		"name": "existCandidate",
+		"outputs": [
+			{
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"constant": true,
 		"inputs": [],
-		"name": "getTotalTicket",
+		"name": "getSellableTicket",
 		"outputs": [
 			{
 				"name": "",
@@ -32,7 +93,7 @@ let abi =
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "getSellableTicket",
+		"name": "getTicketsHave",
 		"outputs": [
 			{
 				"name": "",
@@ -41,52 +102,6 @@ let abi =
 		],
 		"payable": false,
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": true,
-		"inputs": [
-			{
-				"name": "candidate",
-				"type": "bytes32"
-			}
-		],
-		"name": "existCandidate",
-		"outputs": [
-			{
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"payable": false,
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [
-			{
-				"name": "candidate",
-				"type": "bytes32"
-			},
-			{
-				"name": "count",
-				"type": "uint256"
-			}
-		],
-		"name": "vote",
-		"outputs": [],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"constant": false,
-		"inputs": [],
-		"name": "buy",
-		"outputs": [],
-		"payable": true,
-		"stateMutability": "payable",
 		"type": "function"
 	},
 	{
@@ -106,7 +121,21 @@ let abi =
 	{
 		"constant": true,
 		"inputs": [],
-		"name": "getTicketsHave",
+		"name": "getTicketsReceivebyme",
+		"outputs": [
+			{
+				"name": "",
+				"type": "uint256[]"
+			}
+		],
+		"payable": false,
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"constant": true,
+		"inputs": [],
+		"name": "getTotalTicket",
 		"outputs": [
 			{
 				"name": "",
@@ -116,21 +145,6 @@ let abi =
 		"payable": false,
 		"stateMutability": "view",
 		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"name": "total",
-				"type": "uint256"
-			},
-			{
-				"name": "price",
-				"type": "uint256"
-			}
-		],
-		"payable": false,
-		"stateMutability": "nonpayable",
-		"type": "constructor"
 	}
 ];
 
@@ -142,14 +156,16 @@ let currentTokenBalance;
 let tokenPrice;
 
 window.addEventListener('load', function() {
-
+	
   // Checking if Web3 has been injected by the browser (Mist/MetaMask)
   if (typeof web3 !== 'undefined') {
+	
     // Use Mist/MetaMask's provider
     window.web3 = new Web3(web3.currentProvider);
   } else {
     console.log('No web3? You should consider trying MetaMask!')
-    // fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+	// fallback - use your fallback strategy (local node / hosted node + in-dapp id mgmt / fail)
+	
     window.web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"));
   }
   // Now you can start your app & access web3 freely:
@@ -162,14 +178,15 @@ function startApp() {
   document.getElementById('contractAddr').innerHTML = getLink(contractAddress);
 
   web3.eth.getAccounts(function(e,r){
-  document.getElementById('accountAddr').innerHTML = getLink(r[0]);
-  accountAddress = r[0];
-  getValue();
+	alert(r[0]);
+  	document.getElementById('accountAddr').innerHTML = getLink(r[0]);
+  	accountAddress = r[0];
+  	getValue();
   });
 }
 
 function getLink(addr) {
-  return '<a target="_blank" href=https://testnet.etherscan.io/address/' + addr + '>' + addr +'</a>';
+  return '<a target="_blank" href=https://ropsten.etherscan.io/address/' + addr + '>' + addr +'</a>';
 }
 
 function getValue() {
@@ -213,6 +230,12 @@ function getCandidateInfo() {
     for(let i=1;i<=r.length;i++)
     {
       document.getElementById('day_votes_' + i).innerHTML = r[i-1].toString();
+    }
+  });
+  simpleVote.getTicketsReceivebyme(function(e,r){
+    for(let i=1;i<=r.length;i++)
+    {
+      document.getElementById('day_votes_me' + i).innerHTML = r[i-1].toString();
     }
   });
 }
