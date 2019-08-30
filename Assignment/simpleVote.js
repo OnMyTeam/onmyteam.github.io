@@ -175,6 +175,7 @@ window.addEventListener('load', function() {
 function startApp() {
   simpleVoteContract = web3.eth.contract(abi);
   simpleVote = simpleVoteContract.at(contractAddress);
+  alert(simpleVote);
   document.getElementById('contractAddr').innerHTML = getLink(contractAddress);
 
   web3.eth.getAccounts(function(e,r){
